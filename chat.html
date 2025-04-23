@@ -69,22 +69,29 @@
   </div>
 
   <script>
+    const input = document.getElementById("msgInput");
+    input.addEventListener("keydown", async function (event) {
+      // Send message on Enter (but allow Shift+Enter for new lines)
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();  // prevent newline
+        sendMessage();
+      }
+    });
+  
     async function sendMessage() {
-      const input = document.getElementById("msgInput");
-      const text = input.value;
-      input.value = "";
-
+      const text = input.value.trim();
       if (!text) return;
-
+      input.value = "";
+  
       const chatBox = document.getElementById("messages");
       chatBox.innerHTML += `<div class="msg user"><strong>You:</strong> ${text}</div>`;
-
-      const res = await fetch("https://cifs-chatbot.onrender.com/chat", {
+  
+      const res = await fetch("https://your-app-name.up.railway.app/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
       });
-
+  
       const data = await res.json();
       chatBox.innerHTML += `<div class="msg bot"><strong>Bot:</strong> ${data.response}</div>`;
       chatBox.scrollTop = chatBox.scrollHeight;
