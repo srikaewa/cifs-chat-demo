@@ -189,7 +189,7 @@
       chatBox.scrollTop = chatBox.scrollHeight;
 
       try {
-        const res = await fetch("https://your-app-name.up.railway.app/chat", {
+        const res = await fetch("https://forensic-chatbot-production.up.railway.app/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: text, system: systemPrompt })
