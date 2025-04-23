@@ -86,7 +86,7 @@
       const chatBox = document.getElementById("messages");
       chatBox.innerHTML += `<div class="msg user"><strong>You:</strong> ${text}</div>`;
   
-      const res = await fetch("https://your-app-name.up.railway.app/chat", {
+      const res = await fetch("https://forensic-chatbot-production.up.railway.app/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
