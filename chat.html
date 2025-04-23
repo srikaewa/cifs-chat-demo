@@ -78,7 +78,7 @@
       const chatBox = document.getElementById("messages");
       chatBox.innerHTML += `<div class="msg user"><strong>You:</strong> ${text}</div>`;
 
-      const res = await fetch("https://your-app.onrender.com/chat", {
+      const res = await fetch("https://cifs-chatbot.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
