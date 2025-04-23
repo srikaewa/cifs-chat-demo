@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
   <title>CIFS Chatbot</title>
   <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
   <style>
@@ -50,7 +51,8 @@
     .bot * {
       font-size: 1rem !important;
       font-family: inherit;
-      line-height: 1.5;
+      line-height: 1.4;
+      margin: 0;
     }
     
     .bot h1,
@@ -59,22 +61,18 @@
     .bot h4,
     .bot h5,
     .bot h6 {
-      font-size: 1.1rem !important;
+      font-size: 1rem !important;
       font-weight: bold;
-      margin: 0.5rem 0;
-    }
-    
-    .bot p {
       margin: 0.4rem 0;
     }
     
-    .bot ul {
-      padding-left: 1.2rem;
-      margin: 0.5rem 0;
+    .bot p {
+      font-size: 1rem !important;
+      margin: 0.4rem 0;
     }
     
     .bot li {
-      margin: 0.3rem 0;
+      font-size: 1rem !important;
     }
     
     .bot code {
@@ -138,7 +136,7 @@
   <header>
     <h1>CIFS Chatbot</h1>
     <p>Ask about forensic science — now with personalities!</p>
-    <p style="font-size: 0.9rem; color: #ccc;">Version: v1.0.3</p>
+    <p style="font-size: 0.9rem; color: #ccc;">Version: v1.0.4</p>
   </header>
 
   <div id="chat">
