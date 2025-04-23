@@ -66,6 +66,8 @@
       resize: none;
       border-radius: 6px;
       border: 1px solid #ccc;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     button {
@@ -94,6 +96,9 @@
 
       textarea {
         width: 100%;
+        font-size: 1rem;
+        padding: 0.7rem;
+        box-sizing: border-box;
       }
 
       button {
@@ -116,6 +121,15 @@
   <div id="chat">
     <div id="messages"></div>
     <div class="chat-input-container">
+      <label for="personality">Choose style:</label>
+      <select id="personality" style="margin-bottom: 1rem;">
+        <option value="default">🎓 Professional</option>
+        <option value="friendly">😄 Friendly Tutor</option>
+        <option value="kid">🧒 Kid-friendly</option>
+        <option value="robotic">🤖 Robotic</option>
+        <option value="casual">🧢 Chill Buddy</option>
+      </select>
+
       <textarea id="msgInput" placeholder="Type your question..." rows="2"></textarea>
       <button onclick="sendMessage()">Send</button>
     </div>
@@ -136,6 +150,18 @@
     });
   
     async function sendMessage() {
+      const personalityMap = {
+        "default": "You are a professional forensic science expert who answers with technical accuracy and clarity.",
+        "friendly": "You are a friendly and curious forensic science tutor who explains things with warmth and examples.",
+        "kid": "You explain forensic science to a 10-year-old in simple, fun, and easy-to-understand words.",
+        "robotic": "You respond with only facts in a serious, mechanical tone. No emotion or personality.",
+        "casual": "You're a laid-back forensic expert who uses casual language, emojis 😎, and humor."
+      };
+
+      const style = document.getElementById("personality").value;
+      const systemPrompt = personalityMap[style] || personalityMap["default"];
+
+
       const text = input.value.trim();
       if (!text) return;
       input.value = "";
@@ -158,7 +184,7 @@
         const res = await fetch("https://forensic-chatbot-production.up.railway.app/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text })
+          body: JSON.stringify({ message: text, system: systemPrompt })
         });
   
         const data = await res.json();
