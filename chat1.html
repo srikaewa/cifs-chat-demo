@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
   <title>CIFS Chatbot</title>
   <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
   <style>
@@ -28,8 +28,6 @@
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
       padding: 1.5rem;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
     }
 
     #messages {
@@ -39,6 +37,7 @@
 
     .msg {
       margin: 1em 0;
+      word-wrap: break-word;
     }
 
     .user {
@@ -55,18 +54,27 @@
       line-height: 1.4;
       margin: 0;
     }
-
-    .bot h1, .bot h2, .bot h3, .bot h4, .bot h5, .bot h6 {
+    
+    .bot h1,
+    .bot h2,
+    .bot h3,
+    .bot h4,
+    .bot h5,
+    .bot h6 {
       font-size: 1rem !important;
       font-weight: bold;
       margin: 0.4rem 0;
     }
-
-    .bot p, .bot li {
+    
+    .bot p {
       font-size: 1rem !important;
       margin: 0.4rem 0;
     }
-
+    
+    .bot li {
+      font-size: 1rem !important;
+    }
+    
     .bot code {
       background: #eee;
       padding: 0.2rem 0.4rem;
@@ -128,7 +136,7 @@
   <header>
     <h1>CIFS Chatbot</h1>
     <p>Ask about forensic science — now with personalities!</p>
-    <p style="font-size: 0.9rem; color: #ccc;">Version: v1.0.6</p>
+    <p style="font-size: 0.9rem; color: #ccc;">Version: v1.0.5</p>
   </header>
 
   <div id="chat">
@@ -189,7 +197,7 @@
       chatBox.scrollTop = chatBox.scrollHeight;
 
       try {
-        const res = await fetch("https://your-app-name.up.railway.app/chat", {
+        const res = await fetch("https://forensic-chatbot-production.up.railway.app/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: text, system: systemPrompt })
