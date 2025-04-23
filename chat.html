@@ -92,9 +92,13 @@
         body: JSON.stringify({ message: text })
       });
   
-      const data = await res.json();
-      chatBox.innerHTML += `<div class="msg bot"><strong>Bot:</strong> ${data.response}</div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
+      //const data = await res.json();
+      //chatBox.innerHTML += `<div class="msg bot"><strong>Bot:</strong> ${data.response}</div>`;
+      //chatBox.scrollTop = chatBox.scrollHeight;
+      const botMsg = document.createElement("div");
+      botMsg.className = "msg bot";
+      botMsg.innerHTML = `<strong>Bot:</strong> ${data.response}`;
+      chatBox.appendChild(botMsg);
     }
   </script>
 </body>
