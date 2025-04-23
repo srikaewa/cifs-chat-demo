@@ -1,79 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CIFS Chatbot</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
+      margin: 0;
       background-color: #f0f4f8;
       color: #333;
-      margin: 0;
-      padding: 0;
     }
+
     header {
       background-color: #003366;
       color: white;
       padding: 1rem;
       text-align: center;
     }
-    #chat {
-      max-width: 700px;
-      margin: 2rem auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-    }
-    .msg { margin: 1em 0; }
-    .user { color: #003366; }
-    .bot { color: #00703c; }
-    input[type="text"] {
-      width: 70%;
-      padding: 0.7rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #003366;
-      color: white;
-      padding: 0.7rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-left: 0.5rem;
-    }
-    button:hover {
-      background-color: #0059b3;
-    }
+
     #logo {
       max-height: 60px;
       margin-bottom: 0.5rem;
     }
+
+    #chat {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+
+    #messages {
+      min-height: 200px;
+      margin-bottom: 1rem;
+    }
+
+    .msg {
+      margin: 1em 0;
+      word-wrap: break-word;
+    }
+
+    .user {
+      color: #003366;
+    }
+
+    .bot {
+      color: #00703c;
+    }
+
+    .chat-input-container {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 2.5rem;
+      padding: 0.7rem;
+      font-size: 1rem;
+      resize: none;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 0.7rem 1.2rem;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0059b3;
+    }
+
+    @media screen and (max-width: 600px) {
+      #chat {
+        margin: 1rem;
+        padding: 1rem;
+      }
+
+      .chat-input-container {
+        flex-direction: column;
+      }
+
+      textarea {
+        width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
   </style>
+  
+  <!-- Showdown for Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+
 </head>
 <body>
   <header>
-    <img id="logo" src="CIFS_logo.png" alt="CIFS Logo">
+    <img id="logo" src="CIFS_logo.png" alt="CIFS Logo" />
     <h1>CIFS Chatbot</h1>
     <p>Ask anything about forensic science knowledge</p>
-    <p>ถามตอบเกี่ยวกับนิติวิทยาศาสตร์ รับรองได้ทุกเรื่องจ้า</p>
   </header>
 
   <div id="chat">
     <div id="messages"></div>
-    <input id="msgInput" type="text" placeholder="Type your question..." />
-    <button onclick="sendMessage()">Send</button>
+    <div class="chat-input-container">
+      <textarea id="msgInput" placeholder="Type your question..." rows="2"></textarea>
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
   <script>
     const input = document.getElementById("msgInput");
-    input.addEventListener("keydown", async function (event) {
-      // Send message on Enter (but allow Shift+Enter for new lines)
+    const chatBox = document.getElementById("messages");
+  
+    // Initialize Markdown parser
+    const converter = new showdown.Converter({ emoji: true });
+  
+    input.addEventListener("keydown", function (event) {
       if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();  // prevent newline
+        event.preventDefault();
         sendMessage();
       }
     });
@@ -83,23 +140,53 @@
       if (!text) return;
       input.value = "";
   
-      const chatBox = document.getElementById("messages");
-      chatBox.innerHTML += `<div class="msg user"><strong>You:</strong> ${text}</div>`;
+      // Show user message
+      const userMsg = document.createElement("div");
+      userMsg.className = "msg user";
+      userMsg.innerHTML = `<strong>You:</strong> ${text}`;
+      chatBox.appendChild(userMsg);
   
-      const res = await fetch("https://forensic-chatbot-production.up.railway.app/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
-      });
+      // Show "Bot is typing..." indicator
+      const typingMsg = document.createElement("div");
+      typingMsg.className = "msg bot";
+      typingMsg.id = "typing";
+      typingMsg.innerHTML = `<em>Bot is typing...</em>`;
+      chatBox.appendChild(typingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
   
-      const data = await res.json();
-      //chatBox.innerHTML += `<div class="msg bot"><strong>Bot:</strong> ${data.response}</div>`;
-      //chatBox.scrollTop = chatBox.scrollHeight;
-      const botMsg = document.createElement("div");
-      botMsg.className = "msg bot";
-      botMsg.innerHTML = `<strong>Bot:</strong> ${data.response}`;
-      chatBox.appendChild(botMsg);
+      try {
+        const res = await fetch("https://your-app-url.up.railway.app/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+  
+        const data = await res.json();
+  
+        // Remove typing message
+        const typing = document.getElementById("typing");
+        if (typing) typing.remove();
+  
+        // Render markdown with emoji support
+        const botMsg = document.createElement("div");
+        botMsg.className = "msg bot";
+        const markdownHTML = converter.makeHtml(data.response);
+        botMsg.innerHTML = `<strong>Bot:</strong> ${markdownHTML}`;
+        chatBox.appendChild(botMsg);
+      } catch (err) {
+        console.error("Chat error:", err);
+        const typing = document.getElementById("typing");
+        if (typing) typing.remove();
+  
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "msg bot";
+        errorMsg.innerHTML = `<strong>Bot:</strong> ❌ Something went wrong.`;
+        chatBox.appendChild(errorMsg);
+      }
+  
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
   </script>
+  
 </body>
 </html>
