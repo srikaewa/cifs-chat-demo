@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CIFS Chatbot</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    #chat {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+    }
+    .msg { margin: 1em 0; }
+    .user { color: #003366; }
+    .bot { color: #00703c; }
+    input[type="text"] {
+      width: 70%;
+      padding: 0.7rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #003366;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    button:hover {
+      background-color: #0059b3;
+    }
+    #logo {
+      max-height: 60px;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img id="logo" src="CIFS_logo.png" alt="CIFS Logo">
+    <h1>CIFS Chatbot</h1>
+    <p>Ask anything about forensic science knowledge</p>
+  </header>
+
+  <div id="chat">
+    <div id="messages"></div>
+    <input id="msgInput" type="text" placeholder="Type your question..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("msgInput");
+      const text = input.value;
+      input.value = "";
+
+      if (!text) return;
+
+      const chatBox = document.getElementById("messages");
+      chatBox.innerHTML += `<div class="msg user"><strong>You:</strong> ${text}</div>`;
+
+      const res = await fetch("https://your-app.onrender.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await res.json();
+      chatBox.innerHTML += `<div class="msg bot"><strong>Bot:</strong> ${data.response}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
