@@ -208,7 +208,7 @@
         document.getElementById("typing").remove();
         const errorMsg = document.createElement("div");
         errorMsg.className = "msg bot";
-        errorMsg.innerHTML = `<strong>Bot:</strong> ❌ Something went wrong.`;
+        errorMsg.innerHTML = `<strong>Bot:</strong> ❌ Something went wrong:` + err;
         chatBox.appendChild(errorMsg);
       }
     }
